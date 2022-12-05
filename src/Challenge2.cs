@@ -25,7 +25,7 @@
         }
 
 
-        public static void Part2(IEnumerable<string> lines) 
+        public static void Part2(IEnumerable<string> lines)
         {
             var scoreList = new List<int>();
 
@@ -38,12 +38,12 @@
             scoreList.Add(lines.Where(_ => _.Contains("B Z")).Count() * 9);
             scoreList.Add(lines.Where(_ => _.Contains("B X")).Count() * 1);
             scoreList.Add(lines.Where(_ => _.Contains("B Y")).Count() * 5);
-            
+
             // Scissors opponent
             scoreList.Add(lines.Where(_ => _.Contains("C Z")).Count() * 7);
             scoreList.Add(lines.Where(_ => _.Contains("C X")).Count() * 2);
             scoreList.Add(lines.Where(_ => _.Contains("C Y")).Count() * 6);
-            
+
             Console.WriteLine(scoreList.Sum());
         }
     }

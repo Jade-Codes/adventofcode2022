@@ -58,18 +58,19 @@
                 {'Z', 52},
             };
 
-        public static void Part1(IEnumerable<string> lines) 
+        public static void Part1(IEnumerable<string> lines)
         {
             var total = 0;
 
-            foreach(var line in lines){
-                
+            foreach (var line in lines)
+            {
                 var first = line.Substring(0, (int)(line.Length / 2));
                 var last = line.Substring((int)(line.Length / 2), (int)(line.Length / 2));
 
                 var common = first.Intersect(last);
 
-                foreach(var currentChar in common){
+                foreach (var currentChar in common)
+                {
                     total += NumbersMap.GetValueOrDefault(currentChar);
                 }
             }
@@ -78,19 +79,21 @@
         }
 
 
-        public static void Part2(IEnumerable<string> lines) 
+        public static void Part2(IEnumerable<string> lines)
         {
             var total = 0;
 
             var arraySplice = lines.Chunk(3);
 
-            foreach (var arrayList in arraySplice){
+            foreach (var arrayList in arraySplice)
+            {
 
                 var array = arrayList.ToArray();
                 var commonFirstTwo = array[0].Intersect(array[1]);
                 var commonAll = commonFirstTwo.Intersect(array[2]);
 
-                foreach(var currentChar in commonAll){
+                foreach (var currentChar in commonAll)
+                {
                     total += NumbersMap.GetValueOrDefault(currentChar);
                 }
             }
