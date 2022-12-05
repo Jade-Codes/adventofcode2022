@@ -107,12 +107,12 @@ namespace Challenges
             }
         }
 
-        
+
         private static void GetActionsList(IEnumerable<string> lines, string[][] arrayMatrix, out List<int[]> actionList)
-        {   
+        {
             var linesArray = lines.ToArray();
             actionList = new List<int[]>();
-            
+
             for (var i = arrayMatrix.Length + 1; i < linesArray.Length; i++)
             {
                 var numbers = Regex.Split(linesArray[i], @"\D+").Where(_ => !string.IsNullOrEmpty(_)).Select(Int32.Parse).ToList().ToArray();
