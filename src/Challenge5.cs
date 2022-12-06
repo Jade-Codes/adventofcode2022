@@ -4,9 +4,9 @@ namespace Challenges
 {
     public class Challenge5
     {
-        public static void Part1(IEnumerable<string> lines, int rowIndex = 8, int columnIndex = 9)
+        public static void Part1(IEnumerable<string> lines, int rowIndexes = 8, int columnIndexes = 9)
         {
-            GetArrayMatrix(lines, rowIndex, columnIndex, out var arrayMatrix);
+            GetArrayMatrix(lines, rowIndexes, columnIndexes, out var arrayMatrix);
             GetStackList(arrayMatrix, out var stackList);
             GetActionsList(lines, arrayMatrix, out var actionList);
 
@@ -33,9 +33,9 @@ namespace Challenges
             }
         }
 
-        public static void Part2(IEnumerable<string> lines, int rowIndex = 8, int columnIndex = 9)
+        public static void Part2(IEnumerable<string> lines, int rowIndexes= 8, int columnIndexes= 9)
         {
-            GetArrayMatrix(lines, rowIndex, columnIndex, out var arrayMatrix);
+            GetArrayMatrix(lines, rowIndexes, columnIndexes, out var arrayMatrix);
             GetStackList(arrayMatrix, out var stackList);
             GetActionsList(lines, arrayMatrix, out var actionList);
 
@@ -71,15 +71,15 @@ namespace Challenges
             }
         }
 
-        private static void GetArrayMatrix(IEnumerable<string> lines, int rowIndex, int columnIndex, out string[][] arrayMatrix)
+        private static void GetArrayMatrix(IEnumerable<string> lines, int rowIndexes, int columnIndexes, out string[][] arrayMatrix)
         {
             var linesArray = lines.ToArray();
-            arrayMatrix = new string[columnIndex][];
+            arrayMatrix = new string[columnIndexes][];
 
-            for (var i = 0; i < rowIndex; i++)
+            for (var i = 0; i < rowIndexes; i++)
             {
                 var charArrayMatrix = linesArray[i].Chunk(4).ToArray();
-                for (var j = 0; j < columnIndex; j++)
+                for (var j = 0; j < columnIndexes; j++)
                 {
                     var currentString = string.Join("", charArrayMatrix[j]);
 
@@ -106,7 +106,6 @@ namespace Challenges
                 stackList.Add(new Stack<string>(list));
             }
         }
-
 
         private static void GetActionsList(IEnumerable<string> lines, string[][] arrayMatrix, out List<int[]> actionList)
         {
