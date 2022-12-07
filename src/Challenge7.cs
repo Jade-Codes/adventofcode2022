@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace Challenges
+﻿namespace Challenges
 {
     public class Challenge7
     {
@@ -92,7 +90,7 @@ namespace Challenges
             totals.Add(directory, value);
         }
 
-        public static void CalculateSpaceNeeded(Dictionary<string, int> totals, int totalSpace, int totalSpaceNeeded, out int spaceNeeded)
+        private static void CalculateSpaceNeeded(Dictionary<string, int> totals, int totalSpace, int totalSpaceNeeded, out int spaceNeeded)
         {
             var usedSpace = totals.Max(_ => _.Value);
             var spaceAvailable = totalSpace - usedSpace;
