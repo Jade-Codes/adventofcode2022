@@ -7,7 +7,7 @@ namespace Challenges
         public static void Part1(IEnumerable<string> lines)
         {
             var linesArray = lines.ToArray();
-            var scores = new Dictionary<string, int>();
+            var totals = new Dictionary<string, int>();
             var currentDirectories = new List<string>();
             var currentDirectory = string.Empty;
 
@@ -19,56 +19,22 @@ namespace Challenges
                 }
                 else if (linesArray[i].Contains("$ cd "))
                 {
-                    currentDirectory = linesArray[i] + i;
+                    currentDirectory = linesArray[i] + '-' + i;
                     currentDirectories.Add(currentDirectory);
                 }
                 else if (linesArray[i].Contains("$ ls"))
                 {
-                    var filesExist = true;
-                    var counter = i + 1;
-                    while (filesExist)
-                    {
-                        if (counter < linesArray.Length)
-                        {
-                            var splitLine = linesArray[counter].Split(' ');
-                            var isNumber = Int32.TryParse(splitLine[0], out var number);
-
-                            if (isNumber)
-                            {
-                                foreach (var directory in currentDirectories)
-                                {
-                                    var valueExists = scores.TryGetValue(directory, out var value);
-                                    value += number;
-
-                                    if (valueExists)
-                                    {
-                                        scores.Remove(directory);
-                                    }
-                                    scores.Add(directory, value);
-                                }
-                            }
-                            else if (splitLine[0] != "dir")
-                            {
-                                filesExist = false;
-                            }
-
-                            counter++;
-                        }
-                        else
-                        {
-                            filesExist = false;
-                        }
-                    }
+                    CalculateTotals(linesArray, currentDirectories, i, ref totals);
                 }
             }
 
-            Console.WriteLine(scores.Where(_ => _.Value <= 100000).Sum(x => x.Value));
+            Console.WriteLine(totals.Where(_ => _.Value <= 100000).Sum(x => x.Value));
         }
 
-        public static void Part2(IEnumerable<string> lines)
+        public static void Part2(IEnumerable<string> lines, int totalSpace = 70000000, int totalSpaceNeeded = 30000000)
         {
             var linesArray = lines.ToArray();
-            var scores = new Dictionary<string, int>();
+            var totals = new Dictionary<string, int>();
             var currentDirectories = new List<string>();
             var currentDirectory = string.Empty;
 
@@ -80,59 +46,75 @@ namespace Challenges
                 }
                 else if (linesArray[i].Contains("$ cd "))
                 {
-                    currentDirectory = linesArray[i] + i;
+                    currentDirectory = linesArray[i] + '-' + i;
                     currentDirectories.Add(currentDirectory);
                 }
                 else if (linesArray[i].Contains("$ ls"))
                 {
-                    var filesExist = true;
-                    var counter = i + 1;
-                    while (filesExist)
-                    {
-                        if (counter < linesArray.Length)
-                        {
-                            var splitLine = linesArray[counter].Split(' ');
-                            var isNumber = Int32.TryParse(splitLine[0], out var number);
-
-                            if (isNumber)
-                            {
-                                foreach (var directory in currentDirectories)
-                                {
-                                    var valueExists = scores.TryGetValue(directory, out var value);
-                                    value += number;
-
-                                    if (valueExists)
-                                    {
-                                        scores.Remove(directory);
-                                    }
-                                    scores.Add(directory, value);
-                                }
-                            }
-                            else if (splitLine[0] != "dir")
-                            {
-                                filesExist = false;
-                            }
-
-                            counter++;
-                        }
-                        else
-                        {
-                            filesExist = false;
-                        }
-                    }
+                    CalculateTotals(linesArray, currentDirectories, i, ref totals);
                 }
             }
 
-            var usedSpace = scores.Max(_ => _.Value);
-            var spaceAvailable = 70000000 - usedSpace;
-            var spaceNeeded = 30000000 - spaceAvailable;
-
-            var directoriesToDelete = scores.Where(_ => _.Value >= spaceNeeded).OrderBy(_ => _.Value);
-
-            Console.WriteLine(spaceNeeded);
-            foreach(var directoryToDelete in directoriesToDelete)
-                Console.WriteLine(directoryToDelete);
+            CalculateSpaceNeeded(totals, totalSpace, totalSpaceNeeded, out var spaceNeeded);
+            var directoryToDelete = totals.Where(_ => _.Value >= spaceNeeded).OrderBy(_ => _.Value).First();
+            Console.WriteLine(directoryToDelete.Value);
         }
 
+        private static void CalculateTotals(string[] linesArray, IEnumerable<string> directories, int index, ref Dictionary<string, int> totals)
+        {
+            var filesExist = true;
+            var counter = index + 1;
+            while (filesExist)
+            {
+                if (counter < linesArray.Length)
+                {
+                    var splitLine = linesArray[counter].Split(' ');
+                    var isNumber = Int32.TryParse(splitLine[0], out var number);
+
+                    if (isNumber)
+                    {
+                        UpdateTotals(directories, number, ref totals);
+                    }
+                    else if (splitLine[0] != "dir")
+                    {
+                        filesExist = false;
+                    }
+
+                    counter++;
+                }
+                else
+                {
+                    filesExist = false;
+                }
+            }
+        }
+
+        private static void UpdateTotals(IEnumerable<string> directories, int number, ref Dictionary<string, int> totals)
+        {
+            foreach (var directory in directories)
+            {
+                UpdateTotal(directory, number, ref totals);
+            }
+        }
+
+        private static void UpdateTotal(string directory, int number, ref Dictionary<string, int> totals)
+        {
+            var valueExists = totals.TryGetValue(directory, out var value);
+            value += number;
+
+            if (valueExists)
+            {
+                totals.Remove(directory);
+            }
+            totals.Add(directory, value);
+        }
+
+        public static void CalculateSpaceNeeded(Dictionary<string, int> totals, int totalSpace, int totalSpaceNeeded, out int spaceNeeded)
+        {
+
+            var usedSpace = totals.Max(_ => _.Value);
+            var spaceAvailable = totalSpace - usedSpace;
+            spaceNeeded = totalSpaceNeeded - spaceAvailable;
+        }
     }
 }
