@@ -6,35 +6,22 @@ namespace Challenges
     {
         public static void Part1(IEnumerable<string> lines)
         {
-            var linesArray = lines.ToArray();
-            var totals = new Dictionary<string, int>();
-            var currentDirectories = new List<string>();
-            var currentDirectory = string.Empty;
-
-            for (int i = 0; i < linesArray.Length; i++)
-            {
-                if (linesArray[i].Contains("$ cd .."))
-                {
-                    currentDirectories.RemoveAt(currentDirectories.Count - 1);
-                }
-                else if (linesArray[i].Contains("$ cd "))
-                {
-                    currentDirectory = linesArray[i] + '-' + i;
-                    currentDirectories.Add(currentDirectory);
-                }
-                else if (linesArray[i].Contains("$ ls"))
-                {
-                    CalculateTotals(linesArray, currentDirectories, i, ref totals);
-                }
-            }
-
+            CalculateTotals(lines, out var totals);
             Console.WriteLine(totals.Where(_ => _.Value <= 100000).Sum(x => x.Value));
         }
 
         public static void Part2(IEnumerable<string> lines, int totalSpace = 70000000, int totalSpaceNeeded = 30000000)
         {
+            CalculateTotals(lines, out var totals);
+            CalculateSpaceNeeded(totals, totalSpace, totalSpaceNeeded, out var spaceNeeded);
+            var directoryToDelete = totals.Where(_ => _.Value >= spaceNeeded).OrderBy(_ => _.Value).First();
+            Console.WriteLine(directoryToDelete.Value);
+        }
+
+        private static void CalculateTotals(IEnumerable<string> lines, out Dictionary<string, int> totals)
+        {
+            totals = new Dictionary<string, int>();
             var linesArray = lines.ToArray();
-            var totals = new Dictionary<string, int>();
             var currentDirectories = new List<string>();
             var currentDirectory = string.Empty;
 
@@ -54,10 +41,6 @@ namespace Challenges
                     CalculateTotals(linesArray, currentDirectories, i, ref totals);
                 }
             }
-
-            CalculateSpaceNeeded(totals, totalSpace, totalSpaceNeeded, out var spaceNeeded);
-            var directoryToDelete = totals.Where(_ => _.Value >= spaceNeeded).OrderBy(_ => _.Value).First();
-            Console.WriteLine(directoryToDelete.Value);
         }
 
         private static void CalculateTotals(string[] linesArray, IEnumerable<string> directories, int index, ref Dictionary<string, int> totals)
@@ -111,7 +94,6 @@ namespace Challenges
 
         public static void CalculateSpaceNeeded(Dictionary<string, int> totals, int totalSpace, int totalSpaceNeeded, out int spaceNeeded)
         {
-
             var usedSpace = totals.Max(_ => _.Value);
             var spaceAvailable = totalSpace - usedSpace;
             spaceNeeded = totalSpaceNeeded - spaceAvailable;
