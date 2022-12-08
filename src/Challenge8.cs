@@ -52,14 +52,10 @@
             {
                 for (var j = 0; j < matrix[i].Length; j++)
                 {
-                    if (i == 0 ||
-                        j == 0 ||
-                        i == matrix[i].Length - 1 ||
-                        j == matrix[j].Length - 1)
-                    {
-                        
-                    }
-                    else 
+                    if (i != 0 &&
+                        j != 0 &&
+                        i != matrix[i].Length - 1 &&
+                        j != matrix[j].Length - 1)
                     {
                         var topScenicView = CalculateTop(i, j, matrix).Item2;
                         var bottomScenicView = CalculateBottom(i, j, matrix).Item2;
