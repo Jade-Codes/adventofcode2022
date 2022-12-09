@@ -2,151 +2,89 @@
 {
     public class Challenge9
     {
-        public static void Part1(IEnumerable<string> lines)
+        public static void Part1And2(IEnumerable<string> lines, Dictionary<int, (int, int)> dictCoords)
         {
-            var dictCoords = new Dictionary<int, (int, int)>{
-                {0, (0, 0)},
-                {9, (0, 0)}
-            };
             var tCoordsHistory = new List<(int, int)>();
 
             foreach (var line in lines)
             {
                 var splitLine = line.Split(' ');
                 var isNumber = Int32.TryParse(splitLine[1], out var number);
-
-                GetCoords(splitLine[0], number, 0, 9, ref dictCoords, ref tCoordsHistory);
-            }
-
-            Console.WriteLine(tCoordsHistory.Distinct().Count());
-        }
-
-        public static void Part2(IEnumerable<string> lines)
-        {
-            var dictCoords = new Dictionary<int, (int, int)>{
-                {0, (0, 0)},
-                {1, (0, 0)},
-                {2, (0, 0)},
-                {3, (0, 0)},
-                {4, (0, 0)},
-                {5, (0, 0)},
-                {6, (0, 0)},
-                {7, (0, 0)},
-                {8, (0, 0)},
-                {9, (0, 0)}
-            };
-            var tCoordsHistory = new List<(int, int)>();
-
-            foreach (var line in lines)
-            {
-                var splitLine = line.Split(' ');
-                var isNumber = Int32.TryParse(splitLine[1], out var number);
-                
-                var tempCoords = new Dictionary<int, (int,int)>( dictCoords);
-                
-                for(var i=0; i<dictCoords.Count-1; i++){
-                    GetCoords(splitLine[0], number, i, i + 1, ref dictCoords, ref tCoordsHistory);
-
-                    var tempCoord = tempCoords[i+1];
-                    var dictCoord = dictCoords[i+1];
-                    if(tempCoord == dictCoord) {
-                       break;
-                    }
-                    tempCoords = new Dictionary<int, (int,int)>( dictCoords);
-                }
-            }
-
-            Console.WriteLine(tCoordsHistory.Distinct().Count());
-        }
-
-        private static void GetCoords(string direction, int number, int hKey, int tKey, ref Dictionary<int, (int, int)> dictCoords, ref List<(int,int)> tCoordsHistory)
-        { 
-            for (var i = 0; i < number; i++)
-            {
-                var hCoords = dictCoords[hKey];
-                var tCoords = dictCoords[tKey];
-                switch (direction)
+                for (int i = 0; i < number; i++)
                 {
-                    case "L":
-                        if (hCoords.Item2 >= tCoords.Item2)
-                        {
-                            hCoords.Item2--;
-                        }
-                        else if (hCoords.Item1 != tCoords.Item1)
-                        {
-                            tCoords.Item1 = hCoords.Item1;
-                            hCoords.Item2--;
-                            tCoords.Item2--;
-                        }
-                        else
-                        {
-                            hCoords.Item2--;
-                            tCoords.Item2--;
-                        }
-                        break;
-                    case "R":
-                        if (hCoords.Item2 <= tCoords.Item2)
-                        {
-                            hCoords.Item2++;
-                        }
-                        else if (hCoords.Item1 != tCoords.Item1)
-                        {
-                            tCoords.Item1 = hCoords.Item1;
-                            hCoords.Item2++;
-                            tCoords.Item2++;
-                        }
-                        else
-                        {
-                            hCoords.Item2++;
-                            tCoords.Item2++;
-                        }
-                        break;
-                    case "U":
-                        if (hCoords.Item1 >= tCoords.Item1)
-                        {
-                            hCoords.Item1--;
-                        }
-                        else if (hCoords.Item2 != tCoords.Item2)
-                        {
-                            tCoords.Item2 = hCoords.Item2;
-                            hCoords.Item1--;
-                            tCoords.Item1--;
-                        }
-                        else
-                        {
-                            hCoords.Item1--;
-                            tCoords.Item1--;
-                        }
-                        break;
-                    case "D":
-                        if (hCoords.Item1 <= tCoords.Item1)
-                        {
-                            hCoords.Item1++;
-                        }
-                        else if (hCoords.Item2 != tCoords.Item2)
-                        {
-                            tCoords.Item2 = hCoords.Item2;
-                            hCoords.Item1++;
-                            tCoords.Item1++;
-                        }
-                        else
-                        {
-                            hCoords.Item1++;
-                            tCoords.Item1++;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                    dictCoords[0] = GetInitialCoords(splitLine[0], dictCoords[0]);
 
-                dictCoords[hKey] = hCoords;
-                dictCoords[tKey] = tCoords;
-                
-                if(tKey == 9) {
-                    tCoordsHistory.Add(tCoords);
+                    for (var j = 1; j < dictCoords.Count; j++)
+                    {
+                        dictCoords[j] = GetCurrentCoords(j, dictCoords[j - 1], dictCoords[j]);
+
+                        if (j == dictCoords.Count-1)
+                        {
+                            tCoordsHistory.Add(dictCoords[j]);
+                        }
+                    }
                 }
             }
 
+            Console.WriteLine(tCoordsHistory.Distinct().Count());
         }
+
+        private static (int, int) GetInitialCoords(string direction, (int, int) coords)
+        {
+            switch (direction)
+            {
+                case "L":
+                    coords.Item2--;
+                    break;
+                case "R":
+                    coords.Item2++;
+                    break;
+                case "U":
+                    coords.Item1--;
+                    break;
+                case "D":
+                    coords.Item1++;
+                    break;
+                default:
+                    break;
+            }
+
+            return coords;
+        }
+
+
+        private static (int, int) GetCurrentCoords(int index, (int, int) hCoords, (int, int) tCoords)
+        {
+            var distances = new Dictionary<(int, int), (int, int)> {
+                {(2,0), (1,0)},
+                {(2,1), (1,1)},
+                {(2,2), (1,1)},
+                {(1,2), (1,1)},
+                {(0,2), (0,1)},
+                {(-1,2), (-1,1)},
+                {(-2,2), (-1,1)},
+                {(-2,1), (-1,1)},
+                {(-2,0), (-1,0)},
+                {(-2,-1), (-1,-1)},
+                {(-2,-2), (-1,-1)},
+                {(-1,-2), (-1,-1)},
+                {(0,-2), (0,-1)},
+                {(1,-2), (1,-1)},
+                {(2,-2), (1,-1)},
+                {(2,-1), (1,-1)},
+            };
+
+            var distance = (hCoords.Item1 - tCoords.Item1, hCoords.Item2 - tCoords.Item2);
+
+            if (Math.Abs(distance.Item1) < 2 && Math.Abs(distance.Item2) < 2)
+            {
+                return tCoords;
+            }
+
+            var movement = distances[distance];
+
+            return (tCoords.Item1 + movement.Item1, tCoords.Item2 + movement.Item2);
+        }
+
     }
 }
