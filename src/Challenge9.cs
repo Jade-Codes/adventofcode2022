@@ -54,7 +54,7 @@
 
         private static (int, int) GetCurrentCoords(int index, (int, int) hCoords, (int, int) tCoords)
         {
-            var distances = new Dictionary<(int, int), (int, int)> {
+            var distanceToMovement = new Dictionary<(int, int), (int, int)> {
                 {(2,0), (1,0)},
                 {(2,1), (1,1)},
                 {(2,2), (1,1)},
@@ -80,7 +80,7 @@
                 return tCoords;
             }
 
-            var movement = distances[distance];
+            var movement = distanceToMovement[distance];
 
             return (tCoords.Item1 + movement.Item1, tCoords.Item2 + movement.Item2);
         }
