@@ -52,7 +52,6 @@
             return coords;
         }
 
-
         private static (int, int) GetCurrentCoords(int index, (int, int) hCoords, (int, int) tCoords)
         {
             var distances = new Dictionary<(int, int), (int, int)> {
@@ -85,6 +84,5 @@
 
             return (tCoords.Item1 + movement.Item1, tCoords.Item2 + movement.Item2);
         }
-
     }
 }
