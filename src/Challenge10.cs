@@ -65,7 +65,6 @@
                 }
         }
 
-
         private static void RenderAndResetLine(int currentCycle, ref string[] renderArray)
         {
             if (currentCycle % INCREMENT_SIZE == 0)
@@ -97,14 +96,13 @@
                 {
                     currentPosition += Int32.Parse(upcomingCommandValues[1]);
                     sprintPosition = new int[3] { currentPosition, currentPosition + 1, currentPosition + 2 };
-
                 }
+
                 upcomingCommands.RemoveFirst();
             }
             else
             {
                 upcomingCommands.First.Value = (upcomingCommand.key - 1, upcomingCommand.value);
-
             }
         }
     }
