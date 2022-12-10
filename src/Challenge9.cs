@@ -2,9 +2,9 @@
 {
     public class Challenge9
     {
-        public static void Part1And2(IEnumerable<string> lines, Dictionary<int, (int, int)> dictCoords)
+        public static void Part1And2(IEnumerable<string> lines, Dictionary<int, (int x, int y)> dictCoords)
         {
-            var tCoordsHistory = new List<(int, int)>();
+            var tCoordsHistory = new List<(int x, int y)>();
 
             foreach (var line in lines)
             {
@@ -29,21 +29,21 @@
             Console.WriteLine(tCoordsHistory.Distinct().Count());
         }
 
-        private static (int, int) GetInitialCoords(string direction, (int, int) coords)
+        private static (int x, int y) GetInitialCoords(string direction, (int x, int y) coords)
         {
             switch (direction)
             {
                 case "L":
-                    coords.Item2--;
+                    coords.y--;
                     break;
                 case "R":
-                    coords.Item2++;
+                    coords.y++;
                     break;
                 case "U":
-                    coords.Item1--;
+                    coords.x--;
                     break;
                 case "D":
-                    coords.Item1++;
+                    coords.x++;
                     break;
                 default:
                     break;
@@ -52,9 +52,9 @@
             return coords;
         }
 
-        private static (int, int) GetCurrentCoords(int index, (int, int) hCoords, (int, int) tCoords)
+        private static (int x, int y) GetCurrentCoords(int index, (int x, int y) hCoords, (int x, int y) tCoords)
         {
-            var distanceToMovement = new Dictionary<(int, int), (int, int)> {
+            var distanceToMovement = new Dictionary<(int x, int y), (int x, int y)> {
                 {(2,0), (1,0)},
                 {(2,1), (1,1)},
                 {(2,2), (1,1)},
@@ -73,16 +73,16 @@
                 {(2,-1), (1,-1)},
             };
 
-            var distance = (hCoords.Item1 - tCoords.Item1, hCoords.Item2 - tCoords.Item2);
+            (int x, int y) distance = (hCoords.x - tCoords.x, hCoords.y - tCoords.y);
 
-            if (Math.Abs(distance.Item1) < 2 && Math.Abs(distance.Item2) < 2)
+            if (Math.Abs(distance.x) < 2 && Math.Abs(distance.y) < 2)
             {
                 return tCoords;
             }
 
             var movement = distanceToMovement[distance];
 
-            return (tCoords.Item1 + movement.Item1, tCoords.Item2 + movement.Item2);
+            return (tCoords.x + movement.x, tCoords.y + movement.y);
         }
     }
 }

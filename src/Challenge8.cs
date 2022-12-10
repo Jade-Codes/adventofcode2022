@@ -24,10 +24,10 @@
                     {
                         isVisibleCounter++;
                     }
-                    else if (CalculateTop(i, j, matrix).Item1 ||
-                        CalculateBottom(i, j, matrix).Item1 ||
-                        CalculateLeft(j, matrix[i]).Item1 ||
-                        CalculateRight(j, matrix[i]).Item1)
+                    else if (CalculateTop(i, j, matrix).visible ||
+                        CalculateBottom(i, j, matrix).visible ||
+                        CalculateLeft(j, matrix[i]).visible ||
+                        CalculateRight(j, matrix[i]).visible)
                     {
                         isVisibleCounter++;
                     }
@@ -57,10 +57,10 @@
                         i != matrix[i].Length - 1 &&
                         j != matrix[j].Length - 1)
                     {
-                        var topScenicView = CalculateTop(i, j, matrix).Item2;
-                        var bottomScenicView = CalculateBottom(i, j, matrix).Item2;
-                        var leftScenicView = CalculateLeft(j, matrix[i]).Item2;
-                        var rightScenicView = CalculateRight(j, matrix[i]).Item2;
+                        var topScenicView = CalculateTop(i, j, matrix).view;
+                        var bottomScenicView = CalculateBottom(i, j, matrix).view;
+                        var leftScenicView = CalculateLeft(j, matrix[i]).view;
+                        var rightScenicView = CalculateRight(j, matrix[i]).view;
                         var currentScenicView = topScenicView * bottomScenicView * leftScenicView * rightScenicView;
 
                         if(currentScenicView > highestScenicView) {
@@ -73,7 +73,7 @@
             Console.WriteLine(highestScenicView);
         }
 
-        public static Tuple<bool, int> CalculateTop(int x, int y, int[][] matrix)
+        public static (bool visible, int view) CalculateTop(int x, int y, int[][] matrix)
         {
             var isVisible = true;
             var counter = x - 1;
@@ -92,10 +92,10 @@
                 }
                 counter--;
             }
-            return new Tuple<bool, int>(isVisible, x - counter);
+            return (isVisible, x - counter);
         }
 
-        public static Tuple<bool, int> CalculateBottom(int x, int y, int[][] matrix)
+        public static (bool visible, int view) CalculateBottom(int x, int y, int[][] matrix)
         {
             var isVisible = true;
             var counter = x + 1;
@@ -114,11 +114,11 @@
                 counter++;
             }
 
-            return new Tuple<bool, int>(isVisible, counter - x);
+            return (isVisible, counter - x);
         }
 
 
-        public static Tuple<bool, int> CalculateLeft(int y, int[] array)
+        public static (bool visible, int view) CalculateLeft(int y, int[] array)
         {
             var isVisible = true;
             var counter = y - 1;
@@ -137,10 +137,10 @@
                 counter--;
             }
 
-            return new Tuple<bool, int>(isVisible, y - counter);
+            return (isVisible, y - counter);
         }
 
-        public static Tuple<bool, int> CalculateRight(int y, int[] array)
+        public static (bool visible, int view) CalculateRight(int y, int[] array)
         {
             var isVisible = true;
             var counter = y + 1;
@@ -158,7 +158,7 @@
                 }
                 counter++;
             }
-            return new Tuple<bool, int>(isVisible, counter - y);
+            return (isVisible, counter - y);
         }
     }
 }
