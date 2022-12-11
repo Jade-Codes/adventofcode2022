@@ -8,7 +8,7 @@ namespace Challenges
         {
             var currentMonkey = 0;
             var linesArray = lines.ToArray();
-            var items = new Dictionary<int, List<int>>();
+            var items = new Dictionary<int, LinkedList<int>>();
             var operations = new Dictionary<int, string>();
             var testOperations = new Dictionary<int, int>();
             var trueConditions = new Dictionary<int, int>();
@@ -59,24 +59,84 @@ namespace Challenges
                         if (newValue % testOperation == 0)
                         {
                             items[item.Key].Remove(itemValue);
-                            items[trueCondition].Add(newValue);
-                            tally[item.Key] ++;
+                            items[trueCondition].AddLast(newValue);
+                            tally[item.Key]++;
                         }
                         else
                         {
                             items[item.Key].Remove(itemValue);
-                            items[falseCondition].Add(newValue);
-                            tally[item.Key] ++;
+                            items[falseCondition].AddLast(newValue);
+                            tally[item.Key]++;
                         }
                     }
                 }
             }
 
-            
-            var orderTally = tally.OrderByDescending(_ => _.Value).Take(2); 
+            var orderTally = tally.OrderByDescending(_ => _.Value).Take(2);
 
             Console.WriteLine(orderTally.First().Value * orderTally.Last().Value);
-            
+
+        }
+
+        public static void Part2(IEnumerable<string> lines)
+        {
+            var currentMonkey = 0;
+            var linesArray = lines.ToArray();
+            var items = new Dictionary<int, LinkedList<int>>();
+            var operations = new Dictionary<int, string>();
+            var testOperations = new Dictionary<int, int>();
+            var trueConditions = new Dictionary<int, int>();
+            var falseConditions = new Dictionary<int, int>();
+            var tally = new Dictionary<int, int>();
+            var rounds = 20;
+
+            for (var i = 0; i < linesArray.Length; i++)
+            {
+                GetMonkey(linesArray[i], ref currentMonkey);
+                GetStartingPoints(linesArray[i], currentMonkey, ref items);
+                GetOperation(linesArray[i], currentMonkey, ref operations);
+                GetTest(linesArray[i], currentMonkey, ref testOperations);
+                GetTrueCondition(linesArray[i], currentMonkey, ref trueConditions);
+                GetFalseCondition(linesArray[i], currentMonkey, ref falseConditions);
+            }
+
+            foreach (var item in items)
+            {
+                tally[item.Key] = 0;
+            }
+
+            for (var i = 0; i < rounds; i++)
+            {
+                foreach (var item in items)
+                {
+                    foreach (var itemValue in item.Value.ToList())
+                    {
+                        var operation = operations[item.Key].Replace("old", itemValue.ToString());
+                        var trueCondition = trueConditions[item.Key];
+                        var falseCondition = falseConditions[item.Key];
+
+                        CalculateRemainder(operation, testOperations, out var remainders);
+ 
+                        if (remainders[item.Key] == 0)
+                        {
+                            items[trueCondition].AddLast(remainders[trueCondition]);
+                        }
+                        else
+                        {
+                            items[falseCondition].AddLast(remainders[falseCondition]);
+                        }
+
+                        tally[item.Key]++;
+                        items[item.Key].RemoveFirst();
+                    }
+                }
+            }
+
+
+            var orderTally = tally.OrderByDescending(_ => _.Value).Take(2);
+
+            Console.WriteLine(orderTally.First().Value * orderTally.Last().Value);
+
         }
 
         public static void GetMonkey(string currentLine, ref int currentMonkey)
@@ -86,11 +146,11 @@ namespace Challenges
             currentMonkey = Int32.Parse(monkey);
         }
 
-        public static void GetStartingPoints(string currentLine, int currentMonkey, ref Dictionary<int, List<int>> startingItems)
+        public static void GetStartingPoints(string currentLine, int currentMonkey, ref Dictionary<int, LinkedList<int>> startingItems)
         {
             if (!currentLine.Contains("Starting items")) return;
             var currentLineSplit = currentLine.Split(':');
-            var numbers = currentLineSplit[1].Split(',').Select(Int32.Parse).ToList();
+            var numbers = new LinkedList<int>(currentLineSplit[1].Split(',').Select(Int32.Parse));
             startingItems.Add(currentMonkey, numbers);
         }
 
@@ -123,5 +183,32 @@ namespace Challenges
             var nextMonkey = Int32.Parse(Regex.Match(currentLine, @"\d+").Value);
             falseCondition.Add(currentMonkey, nextMonkey);
         }
+
+        private static void CalculateRemainder(string operation, Dictionary<int, int> testOperations, out int[] remainders)
+        {
+            remainders = new int[testOperations.Count()];
+
+            for (var i = 0; i < testOperations.Count(); i++)
+            {
+                if (operation.Contains('*'))
+                {
+                    var operationSplit = operation.Split('*').Select(Int32.Parse).ToArray();
+                    var value = (operationSplit[0] * operationSplit[1]);
+                    remainders[i] = value % testOperations[i];
+                }
+                else if (operation.Contains('+'))
+                {
+                    var operationSplit = operation.Split('+').Select(Int32.Parse).ToArray();
+                    var value = (operationSplit[0] + operationSplit[1]);
+                    remainders[i] = value % testOperations[i];
+                }
+                else
+                {
+                    Console.WriteLine();
+                }
+            }
+
+        }
+
     }
 }
