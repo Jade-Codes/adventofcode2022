@@ -4,8 +4,8 @@
     {
         static void Main(string[] args)
         {
-            var lines = File.ReadAllLines("data\\challenge10.txt");
-            Challenge10.Part1And2(lines);
+            var lines = File.ReadAllLines("data\\challenge11.txt");
+            Challenge11.Part1(lines);
         }
     }
 }
