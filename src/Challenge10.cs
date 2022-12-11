@@ -2,7 +2,6 @@
 {
     public class Challenge10
     {
-
         private const string LIGHT_UP = "#";
         private const string NOOP_NAME = "noop";
         private const string ADD_X_NAME = "addx";
@@ -33,7 +32,7 @@
                 AddSignalStrength(currentCycle, currentPosition, ref signalStrengths);
 
                 RenderAndResetLine(currentCycle, ref renderArray);
-                
+
                 LightUpArray(currentCycle, sprintPosition, ref renderArray);
 
                 UpdatePosition(ref upcomingCommands, ref sprintPosition, ref currentPosition);
@@ -58,21 +57,20 @@
 
         private static void AddSignalStrength(int currentCycle, int currentPosition, ref Dictionary<int, int> signalStrengths)
         {
-            
-                if (currentCycle == FIRST_ROUND_SIZE || (currentCycle - FIRST_ROUND_SIZE) % INCREMENT_SIZE == 0)
-                {
-                    signalStrengths[currentCycle] = currentCycle * currentPosition;
-                }
+            if (currentCycle == FIRST_ROUND_SIZE || (currentCycle - FIRST_ROUND_SIZE) % INCREMENT_SIZE == 0)
+            {
+                signalStrengths[currentCycle] = currentCycle * currentPosition;
+            }
         }
 
         private static void RenderAndResetLine(int currentCycle, ref string[] renderArray)
         {
             if (currentCycle % INCREMENT_SIZE == 0)
-                {
-            Array.ForEach(renderArray, Console.Write);
-            Console.WriteLine();
-            renderArray = Enumerable.Repeat(" ", INCREMENT_SIZE).ToArray();
-        }
+            {
+                Array.ForEach(renderArray, Console.Write);
+                Console.WriteLine();
+                renderArray = Enumerable.Repeat(" ", INCREMENT_SIZE).ToArray();
+            }
         }
 
         private static void LightUpArray(int currentCycle, int[] sprintPosition, ref string[] renderArray)
