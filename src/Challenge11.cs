@@ -3,17 +3,17 @@
 namespace Challenges
 {
     public class Challenge11
-    {
+    {        
         public static void Part1(IEnumerable<string> lines)
         {
             var currentMonkey = 0;
             var linesArray = lines.ToArray();
-            var items = new Dictionary<int, LinkedList<int>>();
+            var items = new Dictionary<int, LinkedList<long>>();
             var operations = new Dictionary<int, string>();
             var testOperations = new Dictionary<int, int>();
             var trueConditions = new Dictionary<int, int>();
             var falseConditions = new Dictionary<int, int>();
-            var tally = new Dictionary<int, int>();
+            var tally = new Dictionary<int, long>();
             var rounds = 20;
 
             for (var i = 0; i < linesArray.Length; i++)
@@ -41,16 +41,16 @@ namespace Challenges
                         var testOperation = testOperations[item.Key];
                         var trueCondition = trueConditions[item.Key];
                         var falseCondition = falseConditions[item.Key];
-                        var newValue = 0;
+                        long newValue = 0;
 
                         if (operation.Contains('*'))
                         {
-                            var operationSplit = operation.Split('*').Select(Int32.Parse).ToArray();
+                            var operationSplit = operation.Split('*').Select(long.Parse).ToArray();
                             newValue = operationSplit[0] * operationSplit[1];
                         }
                         else if (operation.Contains('+'))
                         {
-                            var operationSplit = operation.Split('+').Select(Int32.Parse).ToArray();
+                            var operationSplit = operation.Split('+').Select(long.Parse).ToArray();
                             newValue = operationSplit[0] + operationSplit[1];
                         }
 
@@ -58,16 +58,15 @@ namespace Challenges
 
                         if (newValue % testOperation == 0)
                         {
-                            items[item.Key].Remove(itemValue);
                             items[trueCondition].AddLast(newValue);
-                            tally[item.Key]++;
                         }
                         else
                         {
-                            items[item.Key].Remove(itemValue);
                             items[falseCondition].AddLast(newValue);
-                            tally[item.Key]++;
                         }
+
+                        items[item.Key].RemoveFirst();
+                        tally[item.Key]++;
                     }
                 }
             }
@@ -82,13 +81,13 @@ namespace Challenges
         {
             var currentMonkey = 0;
             var linesArray = lines.ToArray();
-            var items = new Dictionary<int, LinkedList<int>>();
+            var items = new Dictionary<int, LinkedList<long>>();
             var operations = new Dictionary<int, string>();
             var testOperations = new Dictionary<int, int>();
             var trueConditions = new Dictionary<int, int>();
             var falseConditions = new Dictionary<int, int>();
-            var tally = new Dictionary<int, int>();
-            var rounds = 20;
+            var tally = new Dictionary<int, long>();
+            var rounds = 10000;
 
             for (var i = 0; i < linesArray.Length; i++)
             {
@@ -105,6 +104,12 @@ namespace Challenges
                 tally[item.Key] = 0;
             }
 
+            var common_value = 1;
+            foreach (var test in testOperations)
+            {
+                common_value = test.Value * common_value;
+            }
+
             for (var i = 0; i < rounds; i++)
             {
                 foreach (var item in items)
@@ -112,26 +117,38 @@ namespace Challenges
                     foreach (var itemValue in item.Value.ToList())
                     {
                         var operation = operations[item.Key].Replace("old", itemValue.ToString());
+                        var testOperation = testOperations[item.Key];
                         var trueCondition = trueConditions[item.Key];
                         var falseCondition = falseConditions[item.Key];
+                        long newValue = 0;
 
-                        CalculateRemainder(operation, testOperations, out var remainders);
- 
-                        if (remainders[item.Key] == 0)
+                        if (operation.Contains('*'))
                         {
-                            items[trueCondition].AddLast(remainders[trueCondition]);
+                            var operationSplit = operation.Split('*').Select(long.Parse).ToArray();
+                            newValue = operationSplit[0] * operationSplit[1];
+                        }
+                        else if (operation.Contains('+'))
+                        {
+                            var operationSplit = operation.Split('+').Select(long.Parse).ToArray();
+                            newValue = operationSplit[0] + operationSplit[1];
+                        }
+
+                        newValue = newValue % common_value;
+
+                        if (newValue % testOperation == 0)
+                        {
+                            items[trueCondition].AddLast(newValue);
                         }
                         else
                         {
-                            items[falseCondition].AddLast(remainders[falseCondition]);
+                            items[falseCondition].AddLast(newValue);
                         }
 
-                        tally[item.Key]++;
                         items[item.Key].RemoveFirst();
+                        tally[item.Key]++;
                     }
                 }
             }
-
 
             var orderTally = tally.OrderByDescending(_ => _.Value).Take(2);
 
@@ -146,11 +163,11 @@ namespace Challenges
             currentMonkey = Int32.Parse(monkey);
         }
 
-        public static void GetStartingPoints(string currentLine, int currentMonkey, ref Dictionary<int, LinkedList<int>> startingItems)
+        public static void GetStartingPoints(string currentLine, int currentMonkey, ref Dictionary<int, LinkedList<long>> startingItems)
         {
             if (!currentLine.Contains("Starting items")) return;
             var currentLineSplit = currentLine.Split(':');
-            var numbers = new LinkedList<int>(currentLineSplit[1].Split(',').Select(Int32.Parse));
+            var numbers = new LinkedList<long>(currentLineSplit[1].Split(',').Select(long.Parse));
             startingItems.Add(currentMonkey, numbers);
         }
 
@@ -182,32 +199,6 @@ namespace Challenges
             if (!currentLine.Contains("If false")) return;
             var nextMonkey = Int32.Parse(Regex.Match(currentLine, @"\d+").Value);
             falseCondition.Add(currentMonkey, nextMonkey);
-        }
-
-        private static void CalculateRemainder(string operation, Dictionary<int, int> testOperations, out int[] remainders)
-        {
-            remainders = new int[testOperations.Count()];
-
-            for (var i = 0; i < testOperations.Count(); i++)
-            {
-                if (operation.Contains('*'))
-                {
-                    var operationSplit = operation.Split('*').Select(Int32.Parse).ToArray();
-                    var value = (operationSplit[0] * operationSplit[1]);
-                    remainders[i] = value % testOperations[i];
-                }
-                else if (operation.Contains('+'))
-                {
-                    var operationSplit = operation.Split('+').Select(Int32.Parse).ToArray();
-                    var value = (operationSplit[0] + operationSplit[1]);
-                    remainders[i] = value % testOperations[i];
-                }
-                else
-                {
-                    Console.WriteLine();
-                }
-            }
-
         }
 
     }
