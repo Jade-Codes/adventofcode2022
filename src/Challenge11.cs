@@ -200,6 +200,5 @@ namespace Challenges
             var nextMonkey = Int32.Parse(Regex.Match(currentLine, @"\d+").Value);
             falseCondition.Add(currentMonkey, nextMonkey);
         }
-
     }
 }
