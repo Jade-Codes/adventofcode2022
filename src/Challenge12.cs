@@ -131,11 +131,14 @@ namespace Challenges
 
         public static void CalculateShortestDistance(char[][] matrix, List<(int x, int y)> checkedPositions, List<(int x, int y)> nextPositions, out int shortestDistance)
         {
-            shortestDistance = 0;
             var stillGoing = true;
+            shortestDistance = 0;
+
             while (stillGoing)
             {
                 var currentPositions = new List<(int x, int y)>();
+                shortestDistance++;
+                
                 foreach (var nextPosition in nextPositions)
                 {
                     if (matrix[nextPosition.x][nextPosition.y] == 'E')
@@ -146,8 +149,6 @@ namespace Challenges
                     AddPositions(nextPosition.x, nextPosition.y, matrix, ref checkedPositions, ref currentPositions);
                 }
                 nextPositions = currentPositions;
-
-                shortestDistance++;
             }
         }
     }
