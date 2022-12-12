@@ -37,94 +37,50 @@ namespace Challenges
 
         public static void Part1(IEnumerable<string> lines)
         {
-            var linesArray = lines.ToArray();
-            var matrix = new char[linesArray.Length][];
-            var currentDistance = 0;
+            PopulateMatrix(lines, out var matrix);
+            AddStartPositions('S', matrix, out var checkedPositions, out var nextPositions);
+            CalculateShortestDistance(matrix, checkedPositions, nextPositions, out var shortestDistance);
 
-            List<(int x, int y)> nextPositions = new List<(int x, int y)>();
-            List<(int x, int y)> checkedPositions = new List<(int x, int y)>();
-
-            for (var i = 0; i < linesArray.Length; i++)
-            {
-                matrix[i] = linesArray[i].ToCharArray();
-            }
-
-            for (var i = 0; i < matrix.Length; i++)
-            {
-                for (var j = 0; j < matrix[i].Length; j++)
-                {
-                    if (matrix[i][j] == 'S')
-                    {
-                        AddPositions(i, j, matrix, ref checkedPositions, ref nextPositions);
-                        break;
-                    }
-                }
-            }
-            var isNotEnd = true;
-            while (isNotEnd)
-            {
-                var currentPositions = new List<(int x, int y)>();
-                foreach(var nextPosition in nextPositions) 
-                {
-                    if (matrix[nextPosition.x][nextPosition.y] == 'E')
-                    {
-                        isNotEnd = false;
-                        break;
-                    }
-                    AddPositions(nextPosition.x, nextPosition.y, matrix, ref checkedPositions, ref currentPositions);
-                }
-                nextPositions = currentPositions;
-
-                currentDistance++;
-            }
-
-            Console.WriteLine(currentDistance);
+            Console.WriteLine(shortestDistance);
         }
 
         public static void Part2(IEnumerable<string> lines)
         {
-            var linesArray = lines.ToArray();
-            var matrix = new char[linesArray.Length][];
-            var currentDistance = 0;
 
-            List<(int x, int y)> nextPositions = new List<(int x, int y)>();
-            List<(int x, int y)> checkedPositions = new List<(int x, int y)>();
+            PopulateMatrix(lines, out var matrix);
+            AddStartPositions('a', matrix, out var checkedPositions, out var nextPositions);
+            CalculateShortestDistance(matrix, checkedPositions, nextPositions, out var shortestDistance);
+
+            Console.WriteLine(shortestDistance);
+
+        }
+
+        private static void PopulateMatrix(IEnumerable<string> lines, out char[][] matrix)
+        {
+            var linesArray = lines.ToArray();
+            matrix = new char[linesArray.Length][];
 
             for (var i = 0; i < linesArray.Length; i++)
             {
                 matrix[i] = linesArray[i].ToCharArray();
             }
+        }
+
+        private static void AddStartPositions(char start, char[][] matrix, out List<(int x, int y)> checkedPositions, out List<(int x, int y)> nextPositions)
+        {
+            nextPositions = new List<(int x, int y)>();
+            checkedPositions = new List<(int x, int y)>();
 
             for (var i = 0; i < matrix.Length; i++)
             {
                 for (var j = 0; j < matrix[i].Length; j++)
                 {
-                    if (matrix[i][j] == 'a')
+                    if (matrix[i][j] == start)
                     {
                         AddPositions(i, j, matrix, ref checkedPositions, ref nextPositions);
                     }
                 }
             }
-            var isNotEnd = true;
-            while (isNotEnd)
-            {
-                var currentPositions = new List<(int x, int y)>();
-                foreach(var nextPosition in nextPositions) 
-                {
-                    if (matrix[nextPosition.x][nextPosition.y] == 'E')
-                    {
-                        isNotEnd = false;
-                        break;
-                    }
-                    AddPositions(nextPosition.x, nextPosition.y, matrix, ref checkedPositions, ref currentPositions);
-                }
-                nextPositions = currentPositions;
-
-                currentDistance++;
-            }
-
-            Console.WriteLine(currentDistance);
-
         }
 
         private static void AddPositions(int i, int j, char[][] matrix, ref List<(int x, int y)> checkedPositions, ref List<(int x, int y)> nextPositions)
@@ -171,6 +127,28 @@ namespace Challenges
             }
 
             nextPositions.Remove((i, j));
+        }
+
+        public static void CalculateShortestDistance(char[][] matrix, List<(int x, int y)> checkedPositions, List<(int x, int y)> nextPositions, out int shortestDistance)
+        {
+            shortestDistance = 0;
+            var stillGoing = true;
+            while (stillGoing)
+            {
+                var currentPositions = new List<(int x, int y)>();
+                foreach (var nextPosition in nextPositions)
+                {
+                    if (matrix[nextPosition.x][nextPosition.y] == 'E')
+                    {
+                        stillGoing = false;
+                        break;
+                    }
+                    AddPositions(nextPosition.x, nextPosition.y, matrix, ref checkedPositions, ref currentPositions);
+                }
+                nextPositions = currentPositions;
+
+                shortestDistance++;
+            }
         }
     }
 }
