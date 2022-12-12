@@ -5,7 +5,7 @@ namespace Challenges
     public class Challenge12
     {
         public static Dictionary<char, int> NumbersMap = new Dictionary<char, int> {
-                {'S', 0},
+                {'S', 1},
                 {'a', 1},
                 {'b', 2},
                 {'c', 3},
@@ -32,7 +32,7 @@ namespace Challenges
                 {'x', 24},
                 {'y', 25},
                 {'z', 26},
-                {'E', 27},
+                {'E', 26},
             };
 
         public static void Part1(IEnumerable<string> lines)
