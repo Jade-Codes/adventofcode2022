@@ -34,16 +34,17 @@ namespace Challenges
             for (var i = 0; i < pairsArray.Length; i++)
             {
                 var isRightOrder = CompareObjects(pairsArray[i].part1, pairsArray[i].part2);
-                indexDictionary.Add(i+1, isRightOrder);
+                indexDictionary.Add(i + 1, isRightOrder);
             }
 
-            Console.WriteLine(indexDictionary.Where(_ => _.Value < 0 ).Sum(_ => _.Key));
+            Console.WriteLine(indexDictionary.Where(_ => _.Value < 0).Sum(_ => _.Key));
         }
 
-        public static void Part2(IEnumerable<string> lines) {
+        public static void Part2(IEnumerable<string> lines)
+        {
 
             var arrays = new List<dynamic>();
-            var divisors = new List<dynamic>() 
+            var divisors = new List<dynamic>()
             {
                 JArray.Parse("[[2]]"),
                 JArray.Parse("[[6]]")
@@ -60,8 +61,8 @@ namespace Challenges
             arrays.AddRange(divisors);
             arrays.Sort(CompareObjects);
 
-             Console.WriteLine((arrays.IndexOf(divisors[0]) + 1) * (arrays.IndexOf(divisors[1]) + 1));
-         }
+            Console.WriteLine((arrays.IndexOf(divisors[0]) + 1) * (arrays.IndexOf(divisors[1]) + 1));
+        }
 
         private static int CompareObjects(dynamic leftObject, dynamic rightObject)
         {
@@ -72,7 +73,7 @@ namespace Challenges
 
             var leftObjectArray = leftObject as JArray ?? new JArray(leftObject.ToObject<int>());
             var rightObjectArray = rightObject as JArray ?? new JArray(rightObject.ToObject<int>());
-            
+
             var tupleArray = leftObjectArray.Zip(rightObjectArray);
 
             foreach (var tuple in tupleArray)
