@@ -156,14 +156,14 @@ namespace Challenges
 
         }
 
-        public static void GetMonkey(string currentLine, ref int currentMonkey)
+        private static void GetMonkey(string currentLine, ref int currentMonkey)
         {
             if (!currentLine.StartsWith("Monkey")) return;
             var monkey = Regex.Match(currentLine, @"\d+").Value;
             currentMonkey = Int32.Parse(monkey);
         }
 
-        public static void GetStartingPoints(string currentLine, int currentMonkey, ref Dictionary<int, LinkedList<long>> startingItems)
+        private static void GetStartingPoints(string currentLine, int currentMonkey, ref Dictionary<int, LinkedList<long>> startingItems)
         {
             if (!currentLine.Contains("Starting items")) return;
             var currentLineSplit = currentLine.Split(':');
@@ -171,7 +171,7 @@ namespace Challenges
             startingItems.Add(currentMonkey, numbers);
         }
 
-        public static void GetOperation(string currentLine, int currentMonkey, ref Dictionary<int, string> operations)
+        private static void GetOperation(string currentLine, int currentMonkey, ref Dictionary<int, string> operations)
         {
             if (!currentLine.Contains("Operation")) return;
             var currentLineSplit = currentLine.Split(':');
@@ -180,21 +180,21 @@ namespace Challenges
 
         }
 
-        public static void GetTest(string currentLine, int currentMonkey, ref Dictionary<int, int> testOperation)
+        private static void GetTest(string currentLine, int currentMonkey, ref Dictionary<int, int> testOperation)
         {
             if (!currentLine.Contains("Test")) return;
             var divisible = Int32.Parse(Regex.Match(currentLine, @"\d+").Value);
             testOperation.Add(currentMonkey, divisible);
         }
 
-        public static void GetTrueCondition(string currentLine, int currentMonkey, ref Dictionary<int, int> trueCondition)
+        private static void GetTrueCondition(string currentLine, int currentMonkey, ref Dictionary<int, int> trueCondition)
         {
             if (!currentLine.Contains("If true")) return;
             var nextMonkey = Int32.Parse(Regex.Match(currentLine, @"\d+").Value);
             trueCondition.Add(currentMonkey, nextMonkey);
         }
 
-        public static void GetFalseCondition(string currentLine, int currentMonkey, ref Dictionary<int, int> falseCondition)
+        private static void GetFalseCondition(string currentLine, int currentMonkey, ref Dictionary<int, int> falseCondition)
         {
             if (!currentLine.Contains("If false")) return;
             var nextMonkey = Int32.Parse(Regex.Match(currentLine, @"\d+").Value);

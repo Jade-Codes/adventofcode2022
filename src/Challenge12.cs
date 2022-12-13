@@ -129,7 +129,7 @@ namespace Challenges
             nextPositions.Remove((i, j));
         }
 
-        public static void CalculateShortestDistance(char[][] matrix, List<(int x, int y)> checkedPositions, List<(int x, int y)> nextPositions, out int shortestDistance)
+        private static void CalculateShortestDistance(char[][] matrix, List<(int x, int y)> checkedPositions, List<(int x, int y)> nextPositions, out int shortestDistance)
         {
             var stillGoing = true;
             shortestDistance = 0;
@@ -138,7 +138,7 @@ namespace Challenges
             {
                 var currentPositions = new List<(int x, int y)>();
                 shortestDistance++;
-                
+
                 foreach (var nextPosition in nextPositions)
                 {
                     if (matrix[nextPosition.x][nextPosition.y] == 'E')
