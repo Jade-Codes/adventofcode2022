@@ -42,7 +42,6 @@ namespace Challenges
 
         public static void Part2(IEnumerable<string> lines)
         {
-
             var arrays = new List<dynamic>();
             var divisors = new List<dynamic>()
             {
