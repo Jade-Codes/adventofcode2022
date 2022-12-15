@@ -35,7 +35,7 @@
             Console.WriteLine(sandCoordinates.Count());
         }
 
-        public static HashSet<(int x, int y)> GetEdgeCoordinates(IEnumerable<string> lines)
+        private static HashSet<(int x, int y)> GetEdgeCoordinates(IEnumerable<string> lines)
         {
             var edgeCoordinates = new HashSet<(int x, int y)>();
 
@@ -77,7 +77,7 @@
             return edgeCoordinates;
         }
 
-        public static void CalculateNextPosition(int heighestYValue, HashSet<(int x, int y)> edgeCoordinates, ref HashSet<(int x, int y)> sandCoordinates, ref (int x, int y) currentPosition)
+        private static void CalculateNextPosition(int heighestYValue, HashSet<(int x, int y)> edgeCoordinates, ref HashSet<(int x, int y)> sandCoordinates, ref (int x, int y) currentPosition)
         {
             (int x, int y) downPosition = (currentPosition.x, currentPosition.y + 1);
             (int x, int y) leftPosition = (currentPosition.x - 1, currentPosition.y + 1);
