@@ -5,7 +5,7 @@ namespace Challenges
 {
     public class Challenge15
     {
-        public static void Part1(IEnumerable<string> lines, int currentRow = 10)
+        public static void Part1(IEnumerable<string> lines, int currentRow = 2000000)
         {
             var sensorBeacons = new List<SensorBeacon>();
             var noBeaconsRow = new HashSet<(int x, int y)>();
@@ -54,7 +54,7 @@ namespace Challenges
             Console.WriteLine(noBeaconsRow.Count());
         }
 
-        public static void Part2(IEnumerable<string> lines)
+        public static void Part2(IEnumerable<string> lines, int minSize = 0, int maxSize = 4000000)
         {
             var sensorBeacons = new List<SensorBeacon>();
 
@@ -69,9 +69,7 @@ namespace Challenges
                 sensorBeacons.Add(new SensorBeacon((coordinates[0], coordinates[1]), (coordinates[2], coordinates[3])));
             }
 
-            (int x, int y) result = (0, 0);
-            var minSize = 0;
-            var maxSize = 4000000;
+            (int x, int y) lostBeacon = (0, 0);
 
             for (var i = minSize; i <= maxSize; i++)
             {
@@ -87,8 +85,8 @@ namespace Challenges
                         continue;
                     }
 
-                    var start = Calculate.StartXDistance(sb.Sensor.x, sb.Radius, currentDistance, minSize);
-                    var end = Calculate.EndXDistance(sb.Sensor.x, sb.Radius, currentDistance, maxSize);
+                    var start = Calculate.RowDistanceStart(sb.Sensor.x, sb.Radius, currentDistance, minSize);
+                    var end = Calculate.RowDistanceEnd(sb.Sensor.x, sb.Radius, currentDistance, maxSize);
 
                     intersections.Add((start, end));
                 }
@@ -98,7 +96,7 @@ namespace Challenges
                 var minStart = intersectionsArray[0].start;
                 if (minStart > 0)
                 {
-                    result = (minStart + 1, i);
+                    lostBeacon = (minStart + 1, i);
                     goto End;
                 }
 
@@ -109,7 +107,7 @@ namespace Challenges
                     var currentStart = intersectionsArray[j].start;
                     if (intersectionsArray[j].start - maxEnd == 2)
                     {
-                        result = (maxEnd + 1, i);
+                        lostBeacon = (maxEnd + 1, i);
                         goto End;
                     }
                     if (intersectionsArray[j].end > maxEnd)
@@ -117,11 +115,10 @@ namespace Challenges
                         maxEnd = intersectionsArray[j].end;
                     }
                 }
-
             }
 
-            End:
-            Console.WriteLine(new BigInteger(result.x)*new BigInteger(maxSize) + new BigInteger(result.y));
+        End:
+            Console.WriteLine(new BigInteger(lostBeacon.x) * new BigInteger(maxSize) + new BigInteger(lostBeacon.y));
         }
     }
 
@@ -133,8 +130,8 @@ namespace Challenges
             Beacon = beacon;
         }
 
-        public (int x, int y) Sensor { get; set; }
-        public (int x, int y) Beacon { get; set; }
+        public (int x, int y) Sensor { get; init; }
+        public (int x, int y) Beacon { get; init; }
         public int Radius => Calculate.ManhattanDistance(Sensor, Beacon);
 
     }
@@ -142,9 +139,9 @@ namespace Challenges
     public static class Calculate
     {
         public static int ManhattanDistance((int x, int y) coordinates1, (int x, int y) coordinates2) => Math.Abs(coordinates1.x - coordinates2.x) + Math.Abs(coordinates1.y - coordinates2.y);
-    
-        public static int StartXDistance(int sensorX, int radius, int distance, int minStart) => Math.Max(sensorX - radius + distance, minStart);
 
-        public static int EndXDistance(int sensorX, int radius, int distance, int maxEnd) => Math.Min(sensorX + radius - distance, maxEnd);
+        public static int RowDistanceStart(int sensorX, int radius, int distance, int minStart) => Math.Max(sensorX - radius + distance, minStart);
+
+        public static int RowDistanceEnd(int sensorX, int radius, int distance, int maxEnd) => Math.Min(sensorX + radius - distance, maxEnd);
     }
 }
