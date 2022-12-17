@@ -4,7 +4,7 @@ namespace Challenges
 {
     public class Challenge16
     {
-        public static void Part1(IEnumerable<string> lines, int timeout = 30, string start = "AA")
+        public static void Part1(IEnumerable<string> lines, int timeRemaining = 30, string start = "AA")
         {
             var allValves = new Dictionary<string, Valve>();
             var shortestDistances = new Dictionary<(Valve, Valve), int>();
@@ -14,15 +14,15 @@ namespace Challenges
 
             var startValve = allValves.First(_ => _.Key == start).Value;
             var unvisitedValves = allValves.Where(v => v.Value.FlowRate > 0).Select(_ => _.Value);
-            var startValveTimes = new List<(int timeRemaining, Valve currentValve)>
+            var startValveTimes = new List<State>
             {
-                (timeout, startValve)
+                new State(timeRemaining, startValve)
             };
 
             Console.WriteLine(CalculatePressure(startValveTimes, unvisitedValves, shortestDistances));
         }
 
-        public static void Part2(IEnumerable<string> lines, int timeout = 26, string start = "AA")
+        public static void Part2(IEnumerable<string> lines, int timeRemaining = 26, string start = "AA")
         {
             var allValves = new Dictionary<string, Valve>();
             var shortestDistances = new Dictionary<(Valve, Valve), int>();
@@ -34,13 +34,13 @@ namespace Challenges
             var unvisitedValves = allValves.Where(v => v.Value.FlowRate > 0).Select(_ => _.Value);
 
             //If elephant is helping us out, have two of us starting
-            var startValveTimes = new List<(int timeRemaining, Valve currentValve)>
+            var startStates = new List<State>
             {
-                (timeout, startValve),
-                (timeout, startValve)
+                new State(timeRemaining, startValve),
+                new State(timeRemaining, startValve)
             };
 
-            Console.WriteLine(CalculatePressure(startValveTimes, unvisitedValves, shortestDistances));
+            Console.WriteLine(CalculatePressure(startStates, unvisitedValves, shortestDistances));
         }
 
         private static void Parse(IEnumerable<string> lines, ref Dictionary<string, Valve> allValves)
@@ -91,33 +91,33 @@ namespace Challenges
             }
         }
 
-        private static int CalculatePressure(IEnumerable<(int timeRemaining, Valve currentValve)> valveTimes, IEnumerable<Valve> unvisitedValves, Dictionary<(Valve, Valve), int> shortestDistances)
+        private static int CalculatePressure(IEnumerable<State> states, IEnumerable<Valve> unvisitedValves, Dictionary<(Valve, Valve), int> shortestDistances)
         {
             var maxPressure = 0;
-            var currentValveTime = valveTimes.OrderByDescending(_ => _.timeRemaining).First();
+            var currentState = states.OrderByDescending(_ => _.TimeRemaining).First();
 
             foreach (var valve in unvisitedValves)
             {
-                var timeRemaining = currentValveTime.timeRemaining - shortestDistances[(currentValveTime.currentValve, valve)] - 1;
+                var timeRemaining = currentState.TimeRemaining - shortestDistances[(currentState.CurrentValve, valve)] - 1;
                 if (timeRemaining <= 0)
                 {
                     continue;
                 }
 
-                var currentValveTimes = new List<(int timeRemaining, Valve valve)>
+                var currentStates = new List<State>
                 {
-                    (timeRemaining, valve),
+                    new State(timeRemaining, valve),
                 };
 
                 // If elephant is helping us out add other current valve and time
-                if (valveTimes.Count() > 1)
+                if (states.Count() > 1)
                 {
-                    currentValveTimes.Add(valveTimes.OrderByDescending(_ => _.timeRemaining).Last());
+                    currentStates.Add(states.OrderByDescending(_ => _.TimeRemaining).Last());
 
                 }
 
-                var currentUnvistedValves = unvisitedValves.Where(v => v.Name != valve.Name);
-                var currentPressure = timeRemaining * valve.FlowRate + CalculatePressure(currentValveTimes, currentUnvistedValves, shortestDistances);
+                var currentUnvisitedValves = unvisitedValves.Where(v => v.Name != valve.Name);
+                var currentPressure = timeRemaining * valve.FlowRate + CalculatePressure(currentStates, currentUnvisitedValves, shortestDistances);
                 maxPressure = Math.Max(currentPressure, maxPressure);
             }
 
@@ -138,4 +138,16 @@ public record Valve
     public string Name { get; init; }
     public int FlowRate { get; init; }
     public HashSet<string> AdjacentValves { get; init; }
+}
+
+public record State
+{
+    public State(int timeRemaining, Valve currentValve)
+    {
+        TimeRemaining = timeRemaining;
+        CurrentValve = currentValve;
+    }
+
+    public int TimeRemaining { get; init; }
+    public Valve CurrentValve { get; init; }
 }
