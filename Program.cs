@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
             var input = File.ReadAllText("data\\challenge17.txt");
-            Challenge17.Part1(input);
+            Challenge17.Part2(input);
         }
     }
 }
