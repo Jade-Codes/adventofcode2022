@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace Challenges
+﻿namespace Challenges
 {
     public class Challenge17
     {
@@ -18,8 +16,8 @@ namespace Challenges
         {
             var jetPattern = input.ToCharArray();
             var jetPatternIndex = 0;
-            long currentRock = 0;
             var currentRockType = 0;
+            long currentRock = 0;
             long currentRockColumn = 2;
             long currentRockRow = 4;
 
@@ -80,7 +78,7 @@ namespace Challenges
                     }
 
                     currentRock++;
-                
+
                     // If pattern exists calculate tower and write value
                     if (jetCache.TryGetValue((jetPatternIndex, values), out var value))
                     {
@@ -118,7 +116,7 @@ namespace Challenges
 
             switch (rockType)
             {
-                case 0: 
+                case 0:
                     rock.Add((currentColumn, currentRow));
                     rock.Add((currentColumn + 1, currentRow));
                     rock.Add((currentColumn + 2, currentRow));
@@ -157,10 +155,10 @@ namespace Challenges
             return rock;
         }
 
-        public static bool Move(HashSet<(long x, long y)> cache, int rockType, long row, long column, ref HashSet<(long x, long y)> rock)
+        public static bool Move(HashSet<(long x, long y)> fallenRocks, int rockType, long row, long column, ref HashSet<(long x, long y)> rock)
         {
             var newRock = GenerateRock(rockType, row, column);
-            if (!cache.Intersect(newRock).Any())
+            if (!fallenRocks.Intersect(newRock).Any())
             {
                 rock = newRock;
                 return true;
