@@ -123,31 +123,32 @@ namespace Challenges
 
             return maxPressure;
         }
+
+        internal record Valve
+        {
+            public Valve(string currentValve, int flowRate, HashSet<string> adjacentValves)
+            {
+                Name = currentValve;
+                FlowRate = flowRate;
+                AdjacentValves = adjacentValves;
+            }
+
+            public string Name { get; init; }
+            public int FlowRate { get; init; }
+            public HashSet<string> AdjacentValves { get; init; }
+        }
+
+        internal record State
+        {
+            public State(int timeRemaining, Valve currentValve)
+            {
+                TimeRemaining = timeRemaining;
+                CurrentValve = currentValve;
+            }
+
+            public int TimeRemaining { get; init; }
+            public Valve CurrentValve { get; init; }
+        }
     }
 }
 
-public record Valve
-{
-    public Valve(string currentValve, int flowRate, HashSet<string> adjacentValves)
-    {
-        Name = currentValve;
-        FlowRate = flowRate;
-        AdjacentValves = adjacentValves;
-    }
-
-    public string Name { get; init; }
-    public int FlowRate { get; init; }
-    public HashSet<string> AdjacentValves { get; init; }
-}
-
-public record State
-{
-    public State(int timeRemaining, Valve currentValve)
-    {
-        TimeRemaining = timeRemaining;
-        CurrentValve = currentValve;
-    }
-
-    public int TimeRemaining { get; init; }
-    public Valve CurrentValve { get; init; }
-}
