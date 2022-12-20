@@ -14,8 +14,14 @@ namespace Challenges
             Console.WriteLine(CalculateQualtyLevel(bluePrints, startRobots, timeRemaining));
         }
 
-        public static void Part2(IEnumerable<string> lines, int timeRemaining = 26, string start = "AA")
+        public static void Part2(IEnumerable<string> lines, int timeRemaining = 32)
         {
+            var bluePrints = new Dictionary<int, BluePrint>();
+            var startRobots = new Robots((1, 0), (0, 0), (0, 0), (0, 0));
+
+            Parse(lines, ref bluePrints);
+            
+            Console.WriteLine(CalculateQualtyLevel(bluePrints, startRobots, timeRemaining));
         }
 
         private static void Parse(IEnumerable<string> lines, ref Dictionary<int, BluePrint> bluePrints)
@@ -123,7 +129,9 @@ namespace Challenges
             nextState = new State(currentState.TimeRemaining - 1, robots);
 
             if (currentState.CurrentRobots.Ore.CurrentOreAmount < bluePrint.OreOreCost ||
-                currentState.CurrentRobots.Ore.RobotAmount > bluePrint.GeodeOreCost)
+                (currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.ClayOreCost &&
+                    currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.ObsidianOreCost &&
+                    currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.GeodeOreCost))
             {
                 return false;
             }
@@ -141,7 +149,7 @@ namespace Challenges
             nextState = new State(currentState.TimeRemaining - 1, robots);
 
             if (currentState.CurrentRobots.Ore.CurrentOreAmount < bluePrint.ClayOreCost ||
-                currentState.CurrentRobots.Clay.RobotAmount > bluePrint.ObsidianClayCost)
+                currentState.CurrentRobots.Clay.RobotAmount >= bluePrint.ObsidianClayCost)
             {
                 return false;
             }
@@ -160,7 +168,7 @@ namespace Challenges
 
             if (currentState.CurrentRobots.Ore.CurrentOreAmount < bluePrint.ObsidianOreCost ||
                 currentState.CurrentRobots.Clay.CurrentClayAmount < bluePrint.ObsidianClayCost ||
-                currentState.CurrentRobots.Obsidian.RobotAmount > bluePrint.GeodeObsidianCost)
+                currentState.CurrentRobots.Obsidian.RobotAmount >= bluePrint.GeodeObsidianCost)
             {
                 return false;
             }
