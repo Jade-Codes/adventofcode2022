@@ -21,7 +21,7 @@ namespace Challenges
 
             Parse(lines, ref bluePrints);
             
-            Console.WriteLine(CalculateQualtyLevel(bluePrints, startRobots, timeRemaining));
+            Console.WriteLine(CalculateTotal(bluePrints, startRobots, timeRemaining));
         }
 
         private static void Parse(IEnumerable<string> lines, ref Dictionary<int, BluePrint> bluePrints)
@@ -56,6 +56,20 @@ namespace Challenges
             }
 
             return qualityLevels.Sum(_ => _.QualityLevel);
+        }
+
+        private static int CalculateTotal(Dictionary<int, BluePrint> blueprints, Robots startRobot, int timeRemaining)
+        {
+           int total = 1;
+
+            foreach (var bluePrint in blueprints.Take(3))
+            {
+                var currentMax = CalculateMax(bluePrint.Value, startRobot, timeRemaining);
+                total = total * currentMax;
+                Console.WriteLine(bluePrint.Key + " " + currentMax);
+            }
+
+            return total;
         }
 
         private static int CalculateMax(BluePrint bluePrint, Robots startRobots, int timeRemaining)
@@ -104,7 +118,7 @@ namespace Challenges
                     {
                         incomingStates.Add(nextObsidianState);
                     }
-
+                    
                     var robots = new Robots(currentState.CurrentRobots.Ore, currentState.CurrentRobots.Clay, currentState.CurrentRobots.Obsidian, currentState.CurrentRobots.Geode);
                     robots.Ore = (currentState.CurrentRobots.Ore.RobotAmount, currentState.CurrentRobots.Ore.CurrentOreAmount + currentState.CurrentRobots.Ore.RobotAmount);
                     robots.Clay = (currentState.CurrentRobots.Clay.RobotAmount, currentState.CurrentRobots.Clay.CurrentClayAmount + currentState.CurrentRobots.Clay.RobotAmount);
