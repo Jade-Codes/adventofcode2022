@@ -165,8 +165,8 @@ namespace Challenges
 
             if (currentState.CurrentRobots.Ore.CurrentOreAmount < bluePrint.OreOreCost ||
                 (currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.ClayOreCost &&
-                    currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.ObsidianOreCost &&
-                    currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.GeodeOreCost) ||
+                currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.ObsidianOreCost &&
+                currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.GeodeOreCost) ||
                 (bluePrint.OreOreCost >= bluePrint.GeodeOreCost &&
                 bluePrint.OreOreCost >= bluePrint.ClayOreCost &&
                 bluePrint.OreOreCost >= bluePrint.ObsidianClayCost))
