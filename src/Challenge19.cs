@@ -47,7 +47,6 @@ namespace Challenges
         {
             List<(int Index, int QualityLevel)> qualityLevels = new List<(int index, int max)>();
 
-
             foreach (var bluePrint in blueprints)
             {
                 var currentMax = CalculateMax(bluePrint.Value, startRobot, timeRemaining);
@@ -76,18 +75,40 @@ namespace Challenges
         {
             var incomingStates = new HashSet<State>();
             incomingStates.Add(new State(timeRemaining, startRobots));
-            var processedStates = new HashSet<State>();
+            var processedStates = new HashSet<(int timeRemaining,
+                int oreRobotAmount, 
+                int clayRobotAmount, 
+                int clayCurrentAmount, 
+                int obsidianRobotAmount, 
+                int obsidianCurrentAmount, 
+                int geodeRobotAmount, 
+                int geodgeCurrentAmount)>();
             
             while (incomingStates.Count() > 0)
             {
                 var currentState = incomingStates.First();
-                if (processedStates.Contains(currentState))
+                if (processedStates.Contains(
+                    (currentState.TimeRemaining, 
+                    currentState.CurrentRobots.Ore.RobotAmount, 
+                    currentState.CurrentRobots.Clay.RobotAmount,
+                    currentState.CurrentRobots.Clay.CurrentClayAmount, 
+                    currentState.CurrentRobots.Obsidian.RobotAmount,
+                    currentState.CurrentRobots.Obsidian.CurrentObsidianAmount, 
+                    currentState.CurrentRobots.Geode.RobotAmount,
+                    currentState.CurrentRobots.Geode.CurrentGeodeAmount)))
                 {
                     incomingStates.Remove(currentState);
                     continue;
                 }
 
-                processedStates.Add(currentState);
+                processedStates.Add((currentState.TimeRemaining, 
+                    currentState.CurrentRobots.Ore.RobotAmount,
+                    currentState.CurrentRobots.Clay.RobotAmount,
+                    currentState.CurrentRobots.Clay.CurrentClayAmount, 
+                    currentState.CurrentRobots.Obsidian.RobotAmount,
+                    currentState.CurrentRobots.Obsidian.CurrentObsidianAmount, 
+                    currentState.CurrentRobots.Geode.RobotAmount,
+                    currentState.CurrentRobots.Geode.CurrentGeodeAmount));
                 incomingStates.Remove(currentState);
 
                 if (currentState.TimeRemaining <= 0)
@@ -129,7 +150,7 @@ namespace Challenges
                 }
             }
 
-            return processedStates.Max(_ => _.CurrentRobots.Geode.CurrentGeodeAmount);
+            return processedStates.Max(_ => _.geodgeCurrentAmount);
         }
 
         private static bool TryBuyOre(BluePrint bluePrint, State currentState, out State nextState)
@@ -145,7 +166,10 @@ namespace Challenges
             if (currentState.CurrentRobots.Ore.CurrentOreAmount < bluePrint.OreOreCost ||
                 (currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.ClayOreCost &&
                     currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.ObsidianOreCost &&
-                    currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.GeodeOreCost))
+                    currentState.CurrentRobots.Ore.RobotAmount >= bluePrint.GeodeOreCost) ||
+                (bluePrint.OreOreCost >= bluePrint.GeodeOreCost &&
+                bluePrint.OreOreCost >= bluePrint.ClayOreCost &&
+                bluePrint.OreOreCost >= bluePrint.ObsidianClayCost))
             {
                 return false;
             }
