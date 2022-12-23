@@ -46,9 +46,9 @@ namespace Challenges
             foreach (var line in lines)
             {
                 var keyValue = line.Split(':');
-                var digitss = Regex.Match(keyValue[1], DIGIT_PATTERN).Value;
+                var digitsLetter = Regex.Match(keyValue[1], DIGIT_PATTERN).Value;
 
-                if (long.TryParse(digitss, out var digits))
+                if (long.TryParse(digitsLetter, out var digits))
                 {
                     digitsDictionary.Add(keyValue[0], digits);
                 }
