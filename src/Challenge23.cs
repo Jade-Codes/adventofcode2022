@@ -278,16 +278,14 @@ namespace Challenges
                 NextElf:;
                 }
                 
-                var values = currentCoordinates.Except(newCoordinates.Values);
                 currentRound++;
 
-                if(values.Count() == 0)
+                if(currentCoordinates.Except(newCoordinates.Values).Count() == 0)
                 {
                     goto End;
                 }
 
                 currentCoordinates = newCoordinates.Values.ToHashSet();
-                Console.WriteLine(currentRound);
             }
             End:
 
@@ -312,7 +310,7 @@ namespace Challenges
 
         }
 
-        public class Elf
+        internal class Elf
         {
             private readonly int _x;
             private readonly int _y;
