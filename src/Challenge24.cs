@@ -10,15 +10,11 @@ namespace Challenges
             var wallCoordinates = new HashSet<(int x, int y)>();
             var currentBlizzardCoordinates = new Dictionary<int, HashSet<(int x, int y, char direction)>>();
             var currentStandingCoordinates = new Dictionary<int, HashSet<(int x, int y)>>();
+            var minute = 0;
 
             Parse(lines, ref wallCoordinates, ref currentBlizzardCoordinates, ref currentStandingCoordinates);
 
-            var minute = 0;
-            Move(ref minute,
-            wallCoordinates,
-            ref currentBlizzardCoordinates,
-            ref currentStandingCoordinates,
-            'v');
+            Move(ref minute, wallCoordinates, ref currentBlizzardCoordinates, ref currentStandingCoordinates, 'v');
 
             Console.WriteLine(minute);
         }
@@ -28,27 +24,15 @@ namespace Challenges
             var wallCoordinates = new HashSet<(int x, int y)>();
             var currentBlizzardCoordinates = new Dictionary<int, HashSet<(int x, int y, char direction)>>();
             var currentStandingCoordinates = new Dictionary<int, HashSet<(int x, int y)>>();
+            var minute = 0;
 
             Parse(lines, ref wallCoordinates, ref currentBlizzardCoordinates, ref currentStandingCoordinates);
 
-            var minute = 0;
-            Move(ref minute,
-            wallCoordinates,
-            ref currentBlizzardCoordinates,
-            ref currentStandingCoordinates,
-            'v');
+            Move(ref minute, wallCoordinates, ref currentBlizzardCoordinates, ref currentStandingCoordinates, 'v');
 
-            Move(ref minute,
-            wallCoordinates,
-            ref currentBlizzardCoordinates,
-            ref currentStandingCoordinates,
-            '^');
+            Move(ref minute, wallCoordinates, ref currentBlizzardCoordinates, ref currentStandingCoordinates, '^');
 
-            Move(ref minute,
-            wallCoordinates,
-            ref currentBlizzardCoordinates,
-            ref currentStandingCoordinates,
-            'v');
+            Move(ref minute, wallCoordinates, ref currentBlizzardCoordinates, ref currentStandingCoordinates, 'v');
 
             Console.WriteLine(minute);
         }
@@ -68,49 +52,44 @@ namespace Challenges
                 {
                     (int x, int y, char direction) newCoordinates;
 
-                    if (blizzardCoordinates.direction == 'v')
+                    switch (blizzardCoordinates.direction)
                     {
-                        newCoordinates = (blizzardCoordinates.x, blizzardCoordinates.y + 1, blizzardCoordinates.direction);
-                        if (wallCoordinates.Contains((newCoordinates.x, newCoordinates.y)))
-                        {
-                            var minY = wallCoordinates.Min(_ => _.y) + 1;
-                            newCoordinates.y = minY;
-                        }
+                        case 'v':
+                            newCoordinates = (blizzardCoordinates.x, blizzardCoordinates.y + 1, blizzardCoordinates.direction);
+                            if (wallCoordinates.Contains((newCoordinates.x, newCoordinates.y)))
+                            {
+                                newCoordinates.y = wallCoordinates.Min(_ => _.y) + 1;
+                            }
 
-                        nextBlizzardCoordinates.Add(newCoordinates);
-                    }
-                    else if (blizzardCoordinates.direction == '>')
-                    {
-                        newCoordinates = (blizzardCoordinates.x + 1, blizzardCoordinates.y, blizzardCoordinates.direction);
-                        if (wallCoordinates.Contains((newCoordinates.x, newCoordinates.y)))
-                        {
-                            var minX = wallCoordinates.Min(_ => _.x) + 1;
-                            newCoordinates.x = minX;
-                        }
+                            nextBlizzardCoordinates.Add(newCoordinates);
+                            break;
+                        case '>':
+                            newCoordinates = (blizzardCoordinates.x + 1, blizzardCoordinates.y, blizzardCoordinates.direction);
+                            if (wallCoordinates.Contains((newCoordinates.x, newCoordinates.y)))
+                            {
+                                newCoordinates.x = wallCoordinates.Min(_ => _.x) + 1;
+                            }
 
-                        nextBlizzardCoordinates.Add(newCoordinates);
-                    }
-                    else if (blizzardCoordinates.direction == '<')
-                    {
-                        newCoordinates = (blizzardCoordinates.x - 1, blizzardCoordinates.y, blizzardCoordinates.direction);
-                        if (wallCoordinates.Contains((newCoordinates.x, newCoordinates.y)))
-                        {
-                            var maxX = wallCoordinates.Max(_ => _.x) - 1;
-                            newCoordinates.x = maxX;
-                        }
+                            nextBlizzardCoordinates.Add(newCoordinates);
+                            break;
+                        case '<':
+                            newCoordinates = (blizzardCoordinates.x - 1, blizzardCoordinates.y, blizzardCoordinates.direction);
+                            if (wallCoordinates.Contains((newCoordinates.x, newCoordinates.y)))
+                            {
+                                newCoordinates.x = wallCoordinates.Max(_ => _.x) - 1;
+                            }
 
-                        nextBlizzardCoordinates.Add(newCoordinates);
-                    }
-                    else if (blizzardCoordinates.direction == '^')
-                    {
-                        newCoordinates = (blizzardCoordinates.x, blizzardCoordinates.y - 1, blizzardCoordinates.direction);
-                        if (wallCoordinates.Contains((newCoordinates.x, newCoordinates.y)))
-                        {
-                            var minY = wallCoordinates.Max(_ => _.y) - 1;
-                            newCoordinates.y = minY;
-                        }
+                            nextBlizzardCoordinates.Add(newCoordinates);
+                            break;
+                        case '^':
+                            newCoordinates = (blizzardCoordinates.x, blizzardCoordinates.y - 1, blizzardCoordinates.direction);
+                            if (wallCoordinates.Contains((newCoordinates.x, newCoordinates.y)))
+                            {
+                                newCoordinates.y = wallCoordinates.Max(_ => _.y) - 1;
+                            }
 
-                        nextBlizzardCoordinates.Add(newCoordinates);
+                            nextBlizzardCoordinates.Add(newCoordinates);
+                            break;
                     }
                 }
 

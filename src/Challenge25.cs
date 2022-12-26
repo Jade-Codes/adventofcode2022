@@ -6,7 +6,18 @@ namespace Challenges
     {
         public static void Part1(IEnumerable<string> lines)
         {
-            List<BigInteger> values = new List<BigInteger>();
+            CalculateDecimal(lines, out var values);
+
+            var total = values.Aggregate(BigInteger.Add);
+            
+            CalculateSnafu(total, out var snafuList);
+
+            Console.Write(string.Join("", snafuList));
+        }
+
+        private static void CalculateDecimal(IEnumerable<string> lines, out List<BigInteger> values)
+        {
+            values = new List<BigInteger>();
             foreach (var line in lines)
             {
                 var currentValue = new BigInteger(0);
@@ -31,36 +42,33 @@ namespace Challenges
                 }
                 values.Add(currentValue);
             }
+        }
 
-            var total = values.Aggregate(BigInteger.Add);
+        private static void CalculateSnafu(BigInteger total, out List<string> snafuList)
+        {
+            snafuList = new List<string>();
             var currentTotal = total;
-            var snafulist = new List<string>();
-
+            
             while (currentTotal > 0)
             {
-
                 if (currentTotal % 5 == 3)
                 {
-                    snafulist.Add("=");
+                    snafuList.Add("=");
                     currentTotal += 5;
                 }
                 else if (currentTotal % 5 == 4)
                 {
-                    snafulist.Add("-");
+                    snafuList.Add("-");
                     currentTotal += 5;
                 }
                 else
                 {
-
-                    snafulist.Add((currentTotal % 5).ToString());
+                    snafuList.Add((currentTotal % 5).ToString());
                 }
                 currentTotal /= 5;
-
             }
 
-            snafulist.Reverse();
-
-            Console.Write(string.Join("", snafulist));
+            snafuList.Reverse();
         }
     }
 }
