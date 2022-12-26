@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
-
-namespace Challenges
+﻿namespace Challenges
 {
     public class Challenge24
     {
